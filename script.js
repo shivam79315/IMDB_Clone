@@ -2,7 +2,7 @@
 // // url: http://www.omdbapi.com/?i=tt3896198&apikey=b6b2e94d
 
 // // apiURL
-const url = "http://www.omdbapi.com/?";
+const url = "https://www.omdbapi.com/?";
 
 // // apiKey
 const key = "b6b2e94d";
