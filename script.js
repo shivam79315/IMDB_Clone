@@ -2,15 +2,80 @@
 // // url: http://www.omdbapi.com/?i=tt3896198&apikey=b6b2e94d
 
 // // apiURL
-const url = "https://www.omdbapi.com/?";
+const url = "http://www.omdbapi.com/?";
 
 // // apiKey
 const key = "b6b2e94d";
 
 const searchInput = document.getElementById("input");
 const displaySearchList = document.querySelector(".favContainer");
+const randomMoviesContainer = document.querySelector('.randomMoviesContainer');
 
 searchInput?.addEventListener("input", fetchMoviesDisplayList);
+
+async function fetchMovies(searchTerm, page) {
+  const response = await fetch(`${url}apiKey=${key}&s=${searchTerm}&page=${page}`);
+  const data = await response.json();
+  console.log(data);
+  return data;
+}
+
+function getRandomSubSet(array, num) {
+  const shuffled = array.sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, num);
+}
+
+async function fetchRandomMovies (searchTerm, numberOfRandomMovies) {
+  let allMovies = [];
+  let page = 1;
+  let totalResults = 0;
+  let totalPages = 1;
+
+  while(page <= totalPages) {
+    const data = await fetchMovies(searchTerm, page);
+    if(data.Response === 'True'){
+      allMovies = allMovies.concat(data.Search);
+      totalResults = parseInt(data.totalResults, 10);
+      totalPages = Math.ceil(totalResults / 10);
+      page++;
+    }
+    else {
+      break;
+    }
+
+    const randomMovies = getRandomSubSet(allMovies, numberOfRandomMovies);
+
+  return randomMovies;
+  }
+}
+
+const searchTerm = 'sci'; // Replace with your search term or a common keyword
+const numberOfRandomMovies = 10; // Number of random movies you want to fetch
+
+fetchRandomMovies(searchTerm, numberOfRandomMovies).then(movies => {
+  console.log(`Random movies found: ${movies.length}`);
+  if (movies) {
+    randomMoviesContainer.innerHTML = movies
+      .map((movie) => {
+        return `
+            <div>
+            <div class="movieCard">
+            <img src="${movie.Poster}" class="card-img-top" alt="" onerror="this.onerror=null; this.src='./images/movieimage.avif';">
+                <h4 class='movieTitle'>${movie.Title}</h4>
+                <div class='addToFavAndMore'> 
+                <button class="btn btn-success btn-sm addToFavBtn" onclick="addToFavorites('${movie.imdbID}')">Add Favourites</button>
+                <a href="movie.html?id=${movie.imdbID}" class="btn btn-sm moreBtn">More</a>
+                </div>
+            </div>
+            </div>
+        `;
+      })
+      .join("");
+  }
+}).catch(error => {
+  console.error('Error fetching movies:', error);
+});
+
 
 function fetchMoviesDisplayList() {
 
@@ -36,11 +101,11 @@ function displayMovies(movies) {
         return `
             <div>
             <div class="movieCard">
-            <img src="${movie.Poster}" class="card-img-top" alt="" onerror="this.onerror=null; this.src='./images/movieImage.avif';">
+            <img src="${movie.Poster}" class="card-img-top" alt="" onerror="this.onerror=null; this.src='./images/movieimage.avif';">
                 <h4 class='movieTitle'>${movie.Title}</h4>
                 <div class='addToFavAndMore'> 
                 <button class="btn btn-success btn-sm addToFavBtn" onclick="addToFavorites('${movie.imdbID}')">Add Favourites</button>
-                <a href="singleMovie.html?id=${movie.imdbID}" class="btn btn-sm moreBtn">More</a>
+                <a href="movie.html?id=${movie.imdbID}" class="btn btn-sm moreBtn">More</a>
                 </div>
             </div>
             </div>
@@ -113,7 +178,7 @@ function createMovieCard(movieDetails) {
         <h4 class='movieTitle'>${movieDetails.Title}</h4>
         <div class='addToFavAndMore'> 
         <button class="btn btn-danger btn-sm remove-button moreBtn" onclick="removeFav('${movieDetails.imdbID}')">Remove from Favourites</button>
-        <a href="singleMovie.html?id=${movieDetails.imdbID}" class="btn btn-secondary btn-sm moreBtn">More</a>
+        <a href="movie.html?id=${movieDetails.imdbID}" class="btn btn-secondary btn-sm moreBtn">More</a>
         </div>
       </div>
     </div>
@@ -176,5 +241,8 @@ window.onload = function () {
   }
   if (document.body.contains(document.querySelector(".movieContainer"))) {
     singleMovie();
+  }
+  if(document.body.contains(document.querySelector('.mainBody'))) {
+    fetchRandomMovies();
   }
 };
