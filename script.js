@@ -50,7 +50,7 @@ async function fetchRandomMovies (searchTerm, numberOfRandomMovies) {
 }
 
 const searchTerm = 'sci'; // Replace with your search term or a common keyword
-const numberOfRandomMovies = 10; // Number of random movies you want to fetch
+const numberOfRandomMovies = 8; // Number of random movies you want to fetch
 
 fetchRandomMovies(searchTerm, numberOfRandomMovies).then(movies => {
   console.log(`Random movies found: ${movies.length}`);
