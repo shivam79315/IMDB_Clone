@@ -14,7 +14,7 @@ const randomMoviesContainer = document.querySelector('.randomMoviesContainer');
 searchInput?.addEventListener("input", fetchMoviesDisplayList);
 
 async function fetchMovies(searchTerm, page) {
-  const response = await fetch(`${url}apiKey=${key}&s=${searchTerm}&page=${page}`);
+  const response = await fetch(`${url}apikey=${key}&s=${searchTerm}&page=${page}`);
   const data = await response.json();
   console.log(data);
   return data;
@@ -25,28 +25,27 @@ function getRandomSubSet(array, num) {
   return shuffled.slice(0, num);
 }
 
-async function fetchRandomMovies (searchTerm, numberOfRandomMovies) {
+async function fetchRandomMovies(searchTerm, numberOfRandomMovies) {
   let allMovies = [];
   let page = 1;
   let totalResults = 0;
   let totalPages = 1;
 
-  while(page <= totalPages) {
+  while (page <= totalPages) {
     const data = await fetchMovies(searchTerm, page);
-    if(data.Response === 'True'){
+    if (data.Response === 'True') {
       allMovies = allMovies.concat(data.Search);
       totalResults = parseInt(data.totalResults, 10);
       totalPages = Math.ceil(totalResults / 10);
       page++;
-    }
-    else {
+    } else {
       break;
     }
+  }
 
-    const randomMovies = getRandomSubSet(allMovies, numberOfRandomMovies);
+  const randomMovies = getRandomSubSet(allMovies, numberOfRandomMovies);
 
   return randomMovies;
-  }
 }
 
 const searchTerm = 'sci'; // Replace with your search term or a common keyword
@@ -54,7 +53,7 @@ const numberOfRandomMovies = 8; // Number of random movies you want to fetch
 
 fetchRandomMovies(searchTerm, numberOfRandomMovies).then(movies => {
   console.log(`Random movies found: ${movies.length}`);
-  if (movies) {
+  if (movies && randomMoviesContainer) {
     randomMoviesContainer.innerHTML = movies
       .map((movie) => {
         return `
@@ -76,9 +75,7 @@ fetchRandomMovies(searchTerm, numberOfRandomMovies).then(movies => {
   console.error('Error fetching movies:', error);
 });
 
-
 function fetchMoviesDisplayList() {
-
   let input = searchInput.value.trim();
   if (input !== "") {
     findMovies(input);
@@ -95,7 +92,7 @@ async function findMovies(input) {
 }
 
 function displayMovies(movies) {
-  if (movies) {
+  if (movies && displaySearchList) {
     displaySearchList.innerHTML = movies
       .map((movie) => {
         return `
@@ -112,7 +109,7 @@ function displayMovies(movies) {
         `;
       })
       .join("");
-  } else {
+  } else if (displaySearchList) {
     displaySearchList.innerHTML = `<div class="startExploring">
         <i class="fa-solid fa-clapperboard"></i>
         <span>Discover New Movies Now!</span>
@@ -146,7 +143,7 @@ async function fetchMovieDetails(movieId) {
 function displayMovieDetails(movieDetails) {
   const movieDetailsContainer = document.getElementById("movieContainer");
 
-  if (movieDetails.Response && movieDetails.Response === "True") {
+  if (movieDetailsContainer && movieDetails.Response && movieDetails.Response === "True") {
     movieDetailsContainer.innerHTML = `
       <div id="movie-container">
         <img src="${movieDetails.Poster}" alt="${movieDetails.Title}">
@@ -162,7 +159,7 @@ function displayMovieDetails(movieDetails) {
         </div>
       </div>
     `;
-  } else {
+  } else if (movieDetailsContainer) {
     movieDetailsContainer.innerHTML = "Movie details not found.";
   }
 }
@@ -187,7 +184,6 @@ function createMovieCard(movieDetails) {
 }
 
 async function addToFavorites(id) {
-
   const movie = await getMovieDetails(id);
   if (movie) {
     const favouritesList = JSON.parse(localStorage.getItem("favourites")) || [];
@@ -209,18 +205,20 @@ async function getMovieDetails(imdbID) {
 
 function favoritesMovieLoader() {
   const favouritesList = JSON.parse(localStorage.getItem("favourites")) || [];
-  favContainer.innerHTML = "";
+  if (favContainer) {
+    favContainer.innerHTML = "";
 
-  if (favouritesList.length === 0) {
-    const emptyMessage = document.createElement("h2");
-    emptyMessage.textContent = "Your favourites list is empty";
-    emptyMessage.classList.add("emptyMessage");
-    favContainer.appendChild(emptyMessage);
-  } else {
-    favouritesList.forEach((movie) => {
-      const movieCard = createMovieCard(movie);
-      favContainer.appendChild(movieCard);
-    });
+    if (favouritesList.length === 0) {
+      const emptyMessage = document.createElement("h2");
+      emptyMessage.textContent = "Your favourites list is empty";
+      emptyMessage.classList.add("emptyMessage");
+      favContainer.appendChild(emptyMessage);
+    } else {
+      favouritesList.forEach((movie) => {
+        const movieCard = createMovieCard(movie);
+        favContainer.appendChild(movieCard);
+      });
+    }
   }
 }
 
@@ -242,7 +240,7 @@ window.onload = function () {
   if (document.body.contains(document.querySelector(".movieContainer"))) {
     singleMovie();
   }
-  if(document.body.contains(document.querySelector('.mainBody'))) {
-    fetchRandomMovies();
+  if (document.body.contains(document.querySelector('.mainBody'))) {
+    fetchRandomMovies(searchTerm, numberOfRandomMovies);
   }
 };
