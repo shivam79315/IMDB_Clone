@@ -77,17 +77,12 @@ function displayMovies(movies, container) {
               <h4 class='movieTitle'>${movie.Title}</h4>
               <div class='addToFavAndMore'> 
                 <button class="btn btn-success btn-sm addToFavBtn" onclick="addToFavorites('${movie.imdbID}')">Add Favourites</button>
-                <a href="movie.html?id=${movie.imdbID}" class="btn btn-sm moreBtn">More</a>
+                <a href="singlemovie.html?id=${movie.imdbID}" class="btn btn-sm moreBtn">More</a>
               </div>
             </div>
         `;
       })
       .join("");
-  } else if (container) {
-    container.innerHTML = `<div class="startExploring">
-        <i class="fa-solid fa-clapperboard"></i>
-        <span>Discover New Movies Now!</span>
-      </div>`;
   }
 }
 
@@ -173,7 +168,7 @@ function createMovieCard(movieDetails) {
       <img src="${movieDetails.Poster}" class="card-img-top" alt="Image not found" onerror="this.onerror=null; this.src='./images/movieimage.avif';">
       <h4 class='movieTitle'>${movieDetails.Title}</h4>
       <div class='addToFavAndMore'>
-        <a href="movie.html?id=${movieDetails.imdbID}" class="btn btn-sm moreBtn">More</a>
+        <a href="singlemovie.html?id=${movieDetails.imdbID}" class="btn btn-sm moreBtn">More</a>
       </div>
       <button class="removeFavourite" onclick="removeFavourite('${movieDetails.imdbID}')">Remove</button>
     </div>
