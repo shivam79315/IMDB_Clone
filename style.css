@@ -10,9 +10,14 @@
   --base-font-size: 1rem;
 }
 
+.mainBody {
+  overflow-y: auto;
+  height: 100vh;
+}
+
 body {
   font-size: var(--base-font-size);
-  background-color: #558686;
+  background: radial-gradient(circle,rgba(0, 0, 0, 1) 0%, rgba(141, 188, 235, 1) 0%, rgba(138, 222, 214, 1) 34%);
 }
 
 .header {
@@ -44,7 +49,7 @@ body {
 
 .navBar {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   position: relative;
   opacity: 1;
@@ -100,32 +105,33 @@ body {
   gap: 30px;
 }
 
-.movieCard img {
-  overflow: hidden;
-  object-fit:contain;
-  min-height: 400px;
-  max-width:270px;
-  border-radius: 10px;
+.movieCard {
+  max-width: 300px;
+  img {
+    overflow: hidden;
+    max-width:270px;
+    border-radius: 10px;
+    height: 400px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 2s ease-in-out, box-shadow 0.5s ease;
+    h4 {
+      max-width: 270px;
+      text-align: justify;
+    }
+    .addToFavAndMore {
+      display: flex;
+      justify-content: space-between;
+      gap:15px;
+    }
+  }
 }
 
-.movieCard h4 {
-  max-width: 270px;
-  text-align: justify;
+.movieCard:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
 }
-
-.movieCard .addToFavAndMore {
-  display: flex;
-  justify-content: space-between;
-  gap:15px;
-}
-
-.movieCard img {
-  height: 400px;
-  max-width:270px;
-  border-radius: 10px;
-  object-fit: cover;
-}
-
+ 
 .moreBtn, .addToFavBtn {
   background-color: #fff;
   border: 1px solid #d5d9d9;
@@ -218,25 +224,27 @@ body {
   }
 }
 
-#movie-container {
-  height:400px;
+.movieContainer {
   display: flex;
   justify-content: center;
-  gap:30px;
   padding:0px 100px;
+  padding-top: 180px;
+  #movie-container {
+    display: flex;
+    gap:30px;
+  }
+  img {
+    height: 400px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 10px;
+  }
 }
 
 .movieTitle {
   color:#F7F9F2;
   font-weight:600;
   font-size:1rem;
-}
-
-#movie-container img {
-  height: 400px;
-  width: auto;
-  object-fit: contain;
-  border-radius: 10px;
 }
 
 #movie-details {
@@ -246,7 +254,7 @@ body {
   flex-direction: column;
   justify-content: center;
   gap:15px;
-  color:#fff;
+  color:#000;
 }
 
 .randomMoviesContainer {
@@ -254,6 +262,10 @@ body {
   flex-wrap: wrap;
   gap: 30px;
   justify-content: center;
+}
+
+.fallbackImg {
+  height: 200px;
 }
 
 
