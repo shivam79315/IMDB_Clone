@@ -24,16 +24,23 @@ function getRandomSearchTerm() {
 }
 
 // Event Listeners
+let timer;
 searchInput?.addEventListener("input", () => {
-  displaySearchList.innerHTML = "";
-  findMovies(searchInput.value.trim())
+  clearTimeout(timer);
+  timer = setTimeout(() => {
+    displaySearchList.innerHTML = "";
+    findMovies(searchInput.value.trim())
+  }, 500);
 });
-searchInput?.addEventListener("keydown", (event) => {
+
+function searchMovies(event) {
   if (event.key === "Enter") {
     displaySearchList.innerHTML = "";
     findMovies(searchInput.value.trim());
   }
-});
+}
+
+searchInput?.addEventListener("keydown", throttle(searchMovies, 500));
 
 window.onload = function () {
   if (favContainer) favoritesMovieLoader();
